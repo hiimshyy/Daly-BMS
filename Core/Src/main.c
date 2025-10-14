@@ -19,7 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-#include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -493,19 +492,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     if (huart->Instance == USART2) {
         ModbusRTU_RxCpltCallback(huart);
     }
-    // Handle UART1 (BMS) callbacks - interrupt-driven
-    else if (huart->Instance == USART1) {
-        DalyBMS_RxCpltCallback();
-    }
-    // UART3 can be added here if needed
-}
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-    // Handle UART1 (BMS) transmission complete
-    if (huart->Instance == USART1) {
-        DalyBMS_TxCpltCallback();
-    }
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
@@ -534,13 +521,10 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
-  /* init code for USB_DEVICE */
-  // MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
     /* Infinite loop */
     for(;;)
     {
-//    	Debug_USB_Process();
 		// Control relay based on BMS voltage with hysteresis
 		if (!relay_power_enabled && bms_data.voltage > voltage_threshold) {
 			// Enable relay power rails when voltage > 13.5V
